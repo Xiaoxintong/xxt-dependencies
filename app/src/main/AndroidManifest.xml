@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.xxt.jxlxandroid">
+
+    <!-- 开机启动 -->
+    <application
+        android:allowBackup="false"
+        android:icon="@android:mipmap/sym_def_app_icon"
+        android:label="xxt"
+        android:largeHeap="true"
+        android:theme="@android:style/Theme.Material.NoActionBar"
+        android:usesCleartextTraffic="true"
+        android:resizeableActivity="true"
+        android:appComponentFactory="xxt"
+        tools:replace="android:allowBackup,android:label,android:icon,android:theme,android:appComponentFactory"
+        android:requestLegacyExternalStorage="true"
+        >
+
+    </application>
+
+</manifest>

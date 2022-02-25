@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Module dependenceis
+    api project(':library')
+    api project(':pay')
+
+    implementation deps.percentlayout
+    implementation deps.guideview
+
+    api deps.buglyUpdate
+    api deps.buglyCrashReport
+    api deps.buglyTinker
+    annotationProcessor deps.tinkerAnno
+    api deps.tinkerAnnoSupport
+
+    implementation deps.appcompatV7
+    implementation deps.constraintLayout
+    compileOnly deps.javaxAnnotation
+    annotationProcessor deps.daggerCompiler
+    annotationProcessor deps.arouterCompiler
+    annotationProcessor deps.butterknifeCompiler
+}

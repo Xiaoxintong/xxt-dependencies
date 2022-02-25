@@ -1,0 +1,59 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation deps.appcompatV7
+    implementation deps.design
+    implementation deps.constraintLayout
+    implementation deps.supportV4
+    testImplementation deps.junit
+    implementation deps.gson
+    //透明状态栏
+    api "com.gyf.immersionbar:immersionbar:2.3.3"
+
+    //ali ARouter
+    api deps.arouterApi
+    annotationProcessor deps.arouterCompiler
+
+    api deps.datepicker
+    api project(':library')
+    annotationProcessor deps.daggerCompiler
+    annotationProcessor deps.butterknifeCompiler
+}

@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion    rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Module dependenceis
+//    api project(':library')
+    api project(':cooperationbusiness')
+
+    annotationProcessor deps.arouterCompiler
+    annotationProcessor deps.butterknifeCompiler
+
+//    debugApi 'cn.youbeitong.learning_analysis.learning_analysis:flutter_debug:1.0'
+//    releaseApi 'cn.youbeitong.learning_analysis.learning_analysis:flutter_release:1.0'
+
+    debugImplementation 'com.example.xxt_mainflutter:flutter_debug:1.0'
+    releaseImplementation 'com.example.xxt_mainflutter:flutter_release:1.0'
+
+//    debugImplementation 'com.ybt.rapid_cal:flutter_debug:1.0'
+//    releaseImplementation 'com.ybt.rapid_cal:flutter_release:1.0'
+}

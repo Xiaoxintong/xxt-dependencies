@@ -1,0 +1,68 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+//MobSDK {
+//    appKey "234260c2c86e4"
+//    appSecret "daa0910f446499dc5678995c48d5d4c4"
+//
+//    ShareSDK {
+//        gui fae
+//
+//        //平台配置信息
+//        devInfo {
+//            Wechat {
+//                appId "wxf1ffce168263da6b"
+//                appSecret "e92b54f66b1c08c9b7c39cc6c23a8f66"
+//            }
+//            WechatMoments {
+//                appId "wxf1ffce168263da6b"
+//                appSecret "e92b54f66b1c08c9b7c39cc6c23a8f66"
+//            }
+//        }
+//    }
+//}
+
+dependencies {
+    api project(':base:base-commons')
+//    api fileTree(include: ['*.jar'], dir: 'libs'
+    api deps.MobCommons
+    api deps.MobApm
+    api deps.MobGUI
+    api deps.MobTools
+    api deps.ShareSDK
+    api deps.ShareSDKQQ
+    api deps.ShareSDKQZone
+    api deps.ShareSDKWechat
+    api deps.ShareSDKWechatCore
+    api deps.ShareSDKWechatFavorite
+    api deps.ShareSDKWechatMoments
+    api deps.ShareSDKDingding
+}
+

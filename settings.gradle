@@ -1,0 +1,7 @@
+include ':grade'
+include ':app', ':commons', ':homemodule', ':login', ':setting', ':scanner', ':hnxxt', ':circle', ':school', ':cloud', ':clocktask',
+        ':jxt', ':homework', ':pay', ':jxhd', ':webview', ':library', ':share', ':file', ':push',  ':cooperationbusiness',
+        ':score'
+include ':base:base-webview', ':base:base-commons'
+
+

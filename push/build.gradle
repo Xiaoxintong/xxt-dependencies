@@ -1,0 +1,50 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion    rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    // Module dependenceis
+    api project(':library')
+    implementation project(':homemodule')
+    //    implementation deps.ddpush
+    //    api 'com.getui:xmp:1.0.2'
+    //    api 'com.getui:hwp:1.0.3'
+    //    api 'com.getui:mzp:1.0.4'
+    //    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //    compile 'com.huawei.android.hms:push:2.6.3.301'
+    implementation 'com.meizu.flyme.internet:push-internal:3.7.4@aar'
+    implementation 'io.netty:netty-all:4.1.54.Final'
+    //云视讯的aar包里依赖的有该包。moudle不分上下级，运行、打包时候只要确保有一个module中该依赖能参与到打包即可
+    compileOnly deps.commons_lang3
+    implementation deps.fastjson
+    implementation deps.slf4j_api
+}

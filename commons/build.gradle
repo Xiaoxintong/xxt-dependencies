@@ -1,0 +1,86 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        //versionCode      10000
+        // 10000 = 1 * 10000 + 0 * 100 + 0
+        //versionName '1.0.0'
+
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
+
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+    }
+    configurations {
+        all {
+            exclude group: 'commons-logging', module: 'commons-logging'
+            exclude group: 'org.json', module: 'json'
+//            exclude group: 'org.simpleframework', module: 'simple-xml'
+        }
+    }
+}
+
+
+
+dependencies {
+    api project(':base:base-commons')
+
+    api deps.marqueeview
+    api deps.datepicker
+    api deps.magicIndicator
+    api deps.FFmpegMediaMetadataRetrieverCore
+    api deps.FFmpegMediaMetadataRetrieverNativeArmV7a
+    api deps.commonPullToRefresh
+    api deps.floatMenu
+    api deps.circleImageView
+
+    implementation deps.aliyunvideosnapcrop
+    implementation deps.aliyunvideosnaprecord
+    api deps.aliyunvideoplayercustom
+    api deps.aliyunvideoplayertools
+
+    compileOnly deps.javaxAnnotation
+    annotationProcessor deps.daggerCompiler
+
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    annotationProcessor deps.butterknifeCompiler
+    annotationProcessor deps.arouterCompiler
+    annotationProcessor deps.tinkerAnno
+    annotationProcessor deps.qmuiArchCompiler
+    annotationProcessor deps.permissionsdispatcherProcessor
+}

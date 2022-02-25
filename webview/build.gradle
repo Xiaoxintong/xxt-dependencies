@@ -1,0 +1,68 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'   // aar目录
+        }
+    }
+}
+
+dependencies {
+    // Module dependenceis
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    api project(':pay')
+    api project(':push')
+    api project(':cooperationbusiness')
+    api project(':base:base-webview')
+
+    api deps.guideview
+    api deps.ijkplayer
+    api deps.polyvapp
+    api deps.polyvcommonui
+    implementation deps.supportV4
+
+//    compile deps.jsbridge
+
+    annotationProcessor deps.arouterCompiler
+    annotationProcessor deps.butterknifeCompiler
+}

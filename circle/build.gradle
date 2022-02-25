@@ -1,0 +1,64 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    api project(':webview')
+    api project(':homemodule')
+
+    api deps.smartRefresh
+    implementation deps.keyboardlistener
+    implementation deps.appcompatV7
+    implementation deps.constraintLayout
+
+
+    compileOnly deps.javaxAnnotation
+    annotationProcessor deps.daggerCompiler
+    annotationProcessor deps.arouterCompiler
+    annotationProcessor deps.butterknifeCompiler
+
+    implementation deps.flycoTabLayout
+
+    implementation('com.kevin:crop:1.0.2') {
+        // 如果已经引入 support:appcompat-v7 可以加上这句话
+        //commons中已经依赖appcompatV7
+        exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
+
+    implementation deps.typeBuilder
+}

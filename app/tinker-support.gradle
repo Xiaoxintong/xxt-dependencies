@@ -1,0 +1,110 @@
+/***** 打发布包和补丁包的时候必须修改的地方 start **/
+// 平时关掉，打包发布的时候打开，免得开发时候，也会备份apk到指定目录
+def tinkerBuildEnable = false
+/***** 打发布包和补丁包的时候必须修改的地方 end **/
+
+
+/***** 打补丁包的时候必须修改的地方 start **/
+//此处是原有版本的生成的目录，按目前配置是在 app/tinkerApk
+def baseApkDir = "app-1229-16-58-17"
+/***** 打补丁包的时候必须修改的地方 end **/
+
+/** 为了让日志能分辨是否打补丁，所以在 cn.xxt.base.commons.util.HotFixUtil 放置一个热更新补丁版本，
+  * 发版本的时候要去手动改对信息
+  */
+
+/*******  以下这些不用改 **/
+if (tinkerBuildEnable) {
+    apply plugin: 'com.tencent.bugly.tinker-support'
+
+    def bakPath = file("tinkerApk")
+
+    tinkerSupport {
+        // 开启tinker-support插件，默认值true
+        enable = true
+        tinkerEnable = true
+
+        //apk备份目录
+        autoBackupApkDir = "${bakPath}"
+        //自动生成TinkerId
+        autoGenerateTinkerId = true
+
+        // 是否启用覆盖tinkerPatch配置功能，默认值false
+        // 开启后tinkerPatch配置不生效，即无需添加tinkerPatch
+        // 因为bugly没有适配Tinker1.9.13.2的缘故，我们手动配置了allowLoaderInAnyDex和removeLoaderForAllDex
+        // 解决minSDK>=21，导致不用理会multiDex的问题，所以这里需要设成false，以启用自定义配置
+        // 等bugly适配后，可以看看自动的配置是否已经符合要求了
+        overrideTinkerPatchConfiguration = false
+
+
+        // 以下这三个对应打补丁包的配置，不知道下面自定义tinkerpatch配置之后，这三个还有效没，反正放这没错，就不试了
+        // 编译补丁包时，必需指定基线版本的apk，默认值为空
+        baseApk =  "${bakPath}/${baseApkDir}/app-release.apk"
+        // 对应tinker插件applyMapping
+        baseApkProguardMapping = "${bakPath}/${baseApkDir}/app-release-mapping.txt"
+        // 对应tinker插件applyResourceMapping
+        baseApkResourceMapping = "${bakPath}/${baseApkDir}/app-release-R.txt"
+
+
+        // 多渠道打包文件夹
+        buildAllFlavorsDir = "${bakPath}/${baseApkDir}"
+
+        // 是否开启加固模式，支持部分加固，可以查看官方文档，支持360加固
+        // 实际测试发现，这设置成true，apk不加固也能打上补丁，所以这个就设置为true，都能支持
+        // 后又测试，在高版本上如果这个设置了加固，但是实际安装的没加固，也能打上补丁，但是只打上了布局，类class文件没打上补丁
+        // 所以这个要按实际情况设置
+        isProtectedApp = true
+
+        // 是否通过反射方式实现，false的话，会需要一定的改造，但是兼容性好
+        enableProxyApplication = false
+
+        // 是否支持新增activity 10以上不支持
+        supportHotplugComponent = true
+    }
+
+
+    tinkerPatch {
+        tinkerEnable = true
+        oldApk = "${bakPath}/${baseApkDir}/app-release.apk"
+        ignoreWarning = true
+        useSign = true
+
+        // 因为bugly没有适配Tinker1.9.13.2的缘故，我们手动配置了allowLoaderInAnyDex和removeLoaderForAllDex
+        // 解决minSDK>=21，导致不用理会multiDex的问题
+        allowLoaderInAnyDex = true
+        removeLoaderForAllDex = true
+
+        buildConfig {
+            usingResourceMapping = true
+            applyMapping = "${bakPath}/${baseApkDir}/app-release-mapping.txt"
+            applyResourceMapping = "${bakPath}/${baseApkDir}/app-release-R.txt"
+
+            // tinkerId会由tinkersupport自动生成，所以这里随意填，降低维护工作难度
+            tinkerId = "${baseApkDir}"
+
+            keepDexApply = false
+            isProtectedApp = true
+            supportHotplugComponent = true
+        }
+        dex {
+            dexMode = "jar"
+            pattern = ["classes*.dex", "assets/secondary-dex-?.jar"]
+
+            //tinkersupport会自动填写，这也不需要关心
+            loader = ["com.tencent.tinker.loader.*"]
+        }
+        lib {
+            pattern = ["lib/*/*.so"]
+        }
+        res {
+            pattern = ["res/*", "r/*", "assets/*", "resources.arsc", "AndroidManifest.xml"]
+            ignoreChange = ["assets/*_meta.txt"]
+            largeModSize = 100
+        }
+        packageConfig {
+        }
+        sevenZip {
+            zipArtifact = "com.tencent.mm:SevenZip:1.1.10"
+        }
+    }
+}

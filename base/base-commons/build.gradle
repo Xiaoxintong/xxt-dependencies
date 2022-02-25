@@ -1,0 +1,138 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility targetCompatibilityVersion
+        targetCompatibility targetCompatibilityVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        //versionCode      10000
+        // 10000 = 1 * 10000 + 0 * 100 + 0
+        //versionName '1.0.0'
+
+//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
+
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+    }
+    configurations {
+        all {
+            exclude group: 'commons-logging', module: 'commons-logging'
+            exclude group: 'org.json', module: 'json'
+//            exclude group: 'org.simpleframework', module: 'simple-xml'
+        }
+    }
+    repositories {
+        flatDir { dirs 'libs' }
+    }
+}
+
+
+
+dependencies {
+    // App Dependencies
+    api deps.appcompatV7
+    api deps.recyclerviewV7
+    api deps.cardviewV7
+    api deps.supportAnnotations
+    api deps.retrofit
+    api deps.gson
+    api deps.converterGson
+    api deps.adapterRxjava
+    api deps.otto
+    api deps.rxandroid
+    api deps.rxjava
+    api deps.rxbinding
+    api deps.rxbindingV7
+    api deps.rxbindingV4
+    api deps.rxbindingRecyclerview
+    api deps.rxlifecycle
+    api deps.rxlifecycleComponents
+    api deps.rxlifecycleAndroid
+    api deps.rxpermissions
+    api deps.recyclerViewAdapterHelper
+
+    api deps.junit
+    api deps.progresshud
+//    api deps.circleImageView
+    api deps.dagger
+    api deps.supportV4
+    compileOnly deps.javaxAnnotation
+    annotationProcessor deps.daggerCompiler
+
+    api deps.commonsCodec
+
+    api deps.guava
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    api deps.PersistentCookie
+
+    api deps.picasso
+
+    api deps.systembartint
+
+    api deps.design
+    api deps.commonsValidator
+    api deps.butterknife
+    annotationProcessor deps.butterknifeCompiler
+
+    api deps.pandora
+    api deps.okhttp
+    api deps.videocache
+    api deps.constraintLayout
+    api deps.spinkit
+
+    api deps.arouterApi
+    annotationProcessor deps.arouterCompiler
+
+    api deps.zlwAudioRecorder
+
+    api deps.clansFab
+    api deps.imageedit
+    api deps.parallaxviewpager
+    api deps.photoview
+
+    api deps.actionsheet
+
+    api deps.emojiJava
+
+    api deps.fragmentation
+    api deps.fragmentation_core
+
+    api deps.qmui
+    api deps.qmuiArch
+    annotationProcessor deps.qmuiArchCompiler
+
+    api deps.permissionsdispatcher
+    annotationProcessor deps.permissionsdispatcherProcessor
+}

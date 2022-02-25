@@ -1,0 +1,99 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='cn.xxt'
+
+version = "1.0.0"
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+    defaultConfig {
+//        applicationId "cn.xxt.scoring"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'com.alibaba:arouter-api:1.5.0'
+    implementation project(path: ':commons')
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
+
+    implementation deps.appcompatV7
+    implementation deps.design
+    implementation deps.constraintLayout
+    implementation deps.supportV4
+    testImplementation deps.junit
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation 'com.github.castorflex.verticalviewpager:library:19.0.1'
+    compileOnly deps.recyclerviewV7
+    implementation("com.facebook.fresco:fresco:2.3.0") {
+        exclude group: 'com.android.support'
+    }
+
+    implementation("com.facebook.fresco:imagepipeline-okhttp3:2.3.0") {
+        exclude group: 'com.android.support'
+    }
+
+    implementation "com.google.code.gson:gson:2.8.5"
+
+    implementation "com.squareup.okhttp3:okhttp:4.7.2"
+
+    implementation "io.reactivex.rxjava2:rxjava:2.2.13"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+
+    //rxlifecycle2
+    implementation("com.trello.rxlifecycle2:rxlifecycle:2.2.1") {
+        exclude group: 'com.android.support'
+        exclude group: 'io.reactivex.rxjava2'
+    }
+    implementation("com.trello.rxlifecycle2:rxlifecycle-components:2.2.1") {
+        exclude group: 'com.android.support'
+        exclude group: 'io.reactivex.rxjava2'
+        exclude group: 'android.arch.core'
+        exclude group: 'android.arch.lifecycle'
+    }
+    //retrofit2
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation "com.squareup.retrofit2:adapter-rxjava:2.9.0"
+    implementation "com.squareup.retrofit2:converter-gson:2.9.0"
+    //Glide
+    implementation("com.github.bumptech.glide:glide:4.9.0") {
+        exclude group: 'com.android.support'
+    }
+//    api "com.squareup.okhttp3:logging-interceptor:4.2.1"
+
+    //butterknife
+    implementation("com.jakewharton:butterknife:10.0.0") {
+        exclude group: 'com.android.support'
+    }
+    //RxPermissions
+    compileOnly("com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar") {
+        exclude group: 'com.android.support'
+    }
+
+    implementation "com.gyf.immersionbar:immersionbar:2.3.3"
+
+}

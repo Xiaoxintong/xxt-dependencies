@@ -1,0 +1,264 @@
+apply plugin: 'com.android.application'
+apply plugin: 'hannibal'
+//apply from: '../config/quality/quality.gradle'
+apply from: 'tinker-support.gradle'
+//apply plugin: 'com.github.triplet.play'
+//TODO uncomment line below after adding fabric api secret and key to fabric.properties
+//apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    //指定jdk版本
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
+    defaultConfig {
+        applicationId "com.xxt.jxlxandroid"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+//        testInstrumentationRunner "${applicationId}.runner.RxAndroidJUnitRunner"
+
+        ndk {
+            //发布版本只支持"armeabi-v7a"
+            // 本地跑模拟器，可配置成  abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a"
+        }
+
+        versionCode 951
+
+        // 100 = 1 * 100 + 0 * 10 + 0
+        versionName '9.5.1'
+
+        multiDexEnabled true
+
+        flavorDimensions "release"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            ext.betaDistributionReleaseNotesFilePath =
+                    file('../crashlytics_release_notes.txt').absolutePath
+
+//            android.applicationVariants.all { variant ->
+//                variant.outputs.all { output ->
+//                    outputFileName = "xxt${variant.productFlavors[0].name}V${defaultConfig.versionName}.apk"
+//                }
+//            }
+            matchingFallbacks = ['release']
+        }
+
+        debug {
+            versionNameSuffix " Debug"
+            debuggable true
+            matchingFallbacks = ['debug']
+        }
+    }
+
+    dexOptions {
+        jumboMode true
+        preDexLibraries = false
+        //让它不要对Lib做preDexing
+        javaMaxHeapSize "4g"     //增加java堆内存大小
+    }
+
+    /*
+    sourceSets {
+        def commonTestDir = 'src/commonTest/java'
+        test {
+            java.srcDir commonTestDir
+        }
+        androidTest {
+            java.srcDir commonTestDir
+        }
+    }
+    */
+    packagingOptions {
+        exclude 'META-INF/maven/cn.xxt/ddpush/pom.xml'
+        exclude 'META-INF/maven/cn.xxt/ddpush/pom.properties'
+        pickFirst 'lib/armeabi-v7a/libijkplayer.so'
+        pickFirst 'lib/armeabi-v7a/libijksdl.so'
+        pickFirst 'lib/armeabi-v7a/libijkffmpeg.so'
+
+        //https://www.meiwen.com.cn/subject/dbbkdqtx.html
+        exclude('META-INF/LICENSE')
+        exclude('META-INF/beans.xml')
+    }
+
+    //Needed because of this https://github.com/square/okio/issues/58
+    lintOptions {
+        warning 'InvalidPackage'
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+}
+
+
+dependencies {
+    // Module dependenceis
+    implementation project(':scanner')
+//    implementation project(':push')
+    implementation project(':jxhd')
+    implementation project(':setting')
+    implementation project(':hnxxt')
+    implementation project(':homework')
+    implementation project(':jxt')
+    implementation project(':circle')
+
+    implementation project(':school')
+
+    implementation project(':homemodule')
+
+    implementation project(':clocktask')
+    implementation project(':file')
+    implementation project(':cloud')
+    implementation project(':grade')
+
+    implementation deps.cockroach
+
+    implementation deps.dagger
+    implementation deps.htmlParser
+
+    implementation deps.splitedNumEditText
+    implementation deps.keyboardlistener
+
+    implementation deps.constraintLayout
+    implementation deps.supportV4
+    implementation project(path: ':score')
+    compileOnly deps.javaxAnnotation
+    annotationProcessor deps.daggerCompiler
+    annotationProcessor deps.arouterCompiler
+    annotationProcessor deps.butterknifeCompiler
+
+//    implementation deps.HotfixFlutter
+}
+
+System.setProperty("java.awt.headless", "false")
+
+
+println("---------------开始过滤无用权限申请-----------------")
+
+def filterPermissions = []
+
+filterPermissions.add("android.permission.SEND_SMS")//发送短信
+filterPermissions.add("android.permission.READ_SMS")//读取短信权限
+filterPermissions.add("android.permission.WRITE_SMS")//写入消息
+filterPermissions.add("android.permission.RECEIVE_SMS")//接收短信
+
+filterPermissions.add("android.permission.RECEIVE_MMS")//接收彩信
+filterPermissions.add("android.permission.SEND_MMS")//发送彩信
+
+filterPermissions.add("android.permission.CALL_PHONE")//拨打电话权限
+filterPermissions.add("android.permission.READ_CALL_LOG")//读取通话记录
+filterPermissions.add("android.permission.WRITE_CALL_LOG")//写入通话记录
+
+filterPermissions.add("android.permission.READ_CONTACTS")//读取联系人
+filterPermissions.add("android.permission.WRITE_CONTACTS")//写入联系人
+
+filterPermissions.add("android.permission.READ_PROFILE")//读取个人资料
+
+filterPermissions.add("android.permission.RECEIVE_BOOT_COMPLETED")// 开机自启动
+filterPermissions.add("android.permission.GET_TASKS")//获取最近任务，5+也被系统废弃
+//filterPermissions.add("android.REQUEST_INSTALL_PACKAGES.GET_TASKS")//这个分享有用上，不能去掉
+
+filterPermissions.add("android.permission.FOREGROUND_SERVICE") // 前端服务，我们没用上，保守起见，去掉
+
+//filterPermissions.add("android.permission.ACCESS_FINE_LOCATION")//定位权限
+//filterPermissions.add("android.permission.RECORD_AUDIO")//录音权限
+//filterPermissions.add("android.permission.BLUETOOTH")//蓝牙权限
+//filterPermissions.add("android.permission.BLUETOOTH_ADMIN")//开启蓝牙权限
+//filterPermissions.add("android.permission.ACCESS_LOCATION_EXTRA_COMMANDS")//模拟位置权限
+//filterPermissions.add("android.permission.ACCESS_COARSE_LOCATION")//初略定位权限
+//filterPermissions.add("android.permission.READ_PHONE_STATE")//读取手机信息权限
+filterPermissions.add("android.permission.AUTHENTICATE_ACCOUNTS")//访问手机账户
+filterPermissions.add("android.permission.GET_ACCOUNTS")//访问手机账户
+filterPermissions.add("android.permission.MANAGE_ACCOUNTS")//访问手机账户
+//filterPermissions.add("android.permission.WRITE_SETTINGS")//系统设置权限
+//filterPermissions.add("android.permission.CHANGE_WIFI_STATE")//打开wifi
+//filterPermissions.add("android.permission.WAKE_LOCK")//锁屏权限
+//filterPermissions.add("android.permission.SYSTEM_ALERT_WINDOW")//后台弹出界面
+filterPermissions.add("android.permission.BROADCAST_SMS")//和彩云里配置的短信广播
+filterPermissions.add("android.permission.BROADCAST_WAP_PUSH")//和彩云里配置的彩信广播
+filterPermissions.add("android.permission.SEND_RESPOND_VIA_MESSAGE")//和彩云
+
+
+def filterReceivers = []
+def filterServices = []
+def filterAction = []
+def filterScheme = []
+
+/** 云视讯中im模块，替换环信的service和receiver **/
+filterReceivers.add("com.hyphenate.chat.EMMonitorReceiver")
+filterReceivers.add("com.hyphenate.push.platform.mi.EMMiMsgReceiver")
+filterReceivers.add("com.chinamobile.mcloud.sdk.backup.sms.SmsReceiver")
+filterReceivers.add("com.chinamobile.mcloud.sdk.backup.sms.MmsReceiver")
+
+filterServices.add("com.hyphenate.chat.EMChatService")
+filterServices.add("com.hyphenate.chat.EMJobService")
+filterServices.add("com.chinamobile.mcloud.sdk.backup.sms.HeadlessSmsSendService")
+
+filterAction.add("android.intent.action.RESPOND_VIA_MESSAGE")
+filterAction.add("android.provider.Telephony.SMS_DELIVER")
+filterAction.add("android.provider.Telephony.WAP_PUSH_DELIVER")
+filterAction.add("com.chinamobile.mcloud.client.ui.backup.sms.mainsmsactivity")
+filterAction.add("android.intent.action.SEND")
+filterAction.add("android.intent.action.SENDTO")
+filterAction.add("android.intent.action.SEND")
+filterAction.add("android.intent.action.SEND")
+
+
+filterScheme.add("android:scheme=\"sms\"")
+filterScheme.add("android:scheme=\"smsto\"")
+filterScheme.add("android:scheme=\"mms\"")
+filterScheme.add("android:scheme=\"mmsto\"")
+
+
+project.afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.processResources.doFirst { pm ->
+                String manifestPath = output.processResources.manifestFile
+                def manifestContent = file(manifestPath).getText()
+                filterPermissions.each {
+                    // 替换成空字符串，加固时会报错，所以替换成了正在用的网络权限
+                    manifestContent = manifestContent.replace(it + "\"", "android.permission.INTERNET"+'\"')
+                }
+                filterServices.each {
+                    // 替换成空service
+                    manifestContent = manifestContent.replace(it + "\"", "cn.xxt.cooperationbusiness.internal.data.remote.PlaceholderService"+'\"')
+                }
+                filterReceivers.each {
+                    // 替换成空receiver
+                    manifestContent = manifestContent.replace(it + "\"", "cn.xxt.cooperationbusiness.internal.data.remote.PlaceholderReceiver"+'\"')
+                }
+                filterAction.each {
+                    manifestContent = manifestContent.replace(it + "\"", "android.intent.action.VIEW"+'\"')
+                }
+                filterScheme.each {
+                    manifestContent = manifestContent.replace(it , "android:scheme=\"xxt\"")
+                }
+                file(manifestPath).write(manifestContent)
+            }
+        }
+    }
+}
+
+// Log out test results to console
+tasks.matching { it instanceof Test }.all {
+    testLogging.events = ["failed", "passed", "skipped"]
+}
