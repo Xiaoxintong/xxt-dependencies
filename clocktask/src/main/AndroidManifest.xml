@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cn.xxt.clocktask">
+    package="cn.xxt.github.clocktask">
     <!-- 网络权限以及网络状态 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 从sdcard中读取数据的权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 往sdcard中写入数据的权限 -->
